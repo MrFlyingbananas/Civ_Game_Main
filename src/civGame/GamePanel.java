@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private static final int DELAYS_BEFORE_PAUSE = 10;
 	//game objects
 	private World world;
-	private Gold Gold = new Gold();
+	private Gold money = new Gold();
 	public GamePanel(){
 		world = new World();
 		setPreferredSize(gameDim);
@@ -95,7 +95,7 @@ public class GamePanel extends JPanel implements Runnable{
 					"sleepTime:		"+sleepTime / 1000000+"\n"+
 					"overSleepTime: "+overSleepTime+"\n"+
 					"delays:		"+delays+"\n"+
-					"Gold:			"+Gold.getGold()	
+					"Gold:			"+money.getGold()	
 			);
 		}
 	}
