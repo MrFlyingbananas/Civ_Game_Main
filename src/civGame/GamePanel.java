@@ -16,6 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
 	//JPanel variables
 	static final Dimension gameDim = new Dimension(Screen.WINDOW_WIDTH, Screen.WINDOW_HEIGHT);
 	//game vars
+	int x = Tile_Vars.farmVars.GOLD_COST.getFarmVars();
 	private Thread game;
 	private volatile boolean running = false;
 	private long period = 6*1000000;  //ms >nano
@@ -95,7 +96,8 @@ public class GamePanel extends JPanel implements Runnable{
 					"sleepTime:		"+sleepTime / 1000000+"\n"+
 					"overSleepTime: "+overSleepTime+"\n"+
 					"delays:		"+delays+"\n"+
-					"Gold:			"+money.getGold()	
+					"Gold:			"+money.getGold()+"\n"+
+					"Swagswagswag:	"+x
 			);
 		}
 	}

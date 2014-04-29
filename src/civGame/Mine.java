@@ -3,7 +3,7 @@ package civGame;
 import java.awt.Image;
 
 public class Mine {
-	private int mineX, mineY;
+	private int mineX, mineY, mineNum;
 	private Image MINE_BLOCK;
 	public Mine(){
 		createMine();
@@ -20,5 +20,8 @@ public class Mine {
 	}
 	public int getMineY(){
 		return mineY;
+	}
+	public int getMineNum(){
+		return mineNum;
 	}
 }
