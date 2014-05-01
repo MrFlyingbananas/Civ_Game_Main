@@ -1,17 +1,15 @@
 package civGame;
 
 public class Tile_Vars {
-	public final static int PEOPLE_PER_HOUSE = 10;
+	public final static int HOUSE_GOLD_COST = 4;
+	public final static int HOUSE_PEOPLE_YIELD = 4;
 	public final static int MINE_PEOPLE_COST = 4;
-	public static enum farmVars{
-		PEOPLE_COST(100),
-		GOLD_COST(4);
-		private int num;
-		private farmVars(int num){
-			num = this.num;
-		}
-		int getFarmVars(){
-			return num;
-		}
-	}
+	public final static int MINE_GOLD_YIELD = 4;
+	public final static int MINE_STONE_YIELD = 4;
+	public final static int FARM_PEOPLE_COST = 4;
+	public final static int FARM_FOOD_YILED = 4;
+	public final static int FARM_GOLD_COST = 4;
+	public final static int WELL_STONE_COST = 4;
+	public final static int WELL_WATER_YILED = 4;
+	
 }
