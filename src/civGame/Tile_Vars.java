@@ -11,5 +11,4 @@ public class Tile_Vars {
 	public final static int FARM_GOLD_COST = 4;
 	public final static int WELL_STONE_COST = 4;
 	public final static int WELL_WATER_YILED = 4;
-	
 }
