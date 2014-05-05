@@ -9,11 +9,11 @@ import javax.swing.ImageIcon;
 public class World {
 
 	
-	public Rectangle[][] blocks;
+	public static Rectangle[][] blocks;
 	public Image[][] blockImg;
 	private int imgX = 0, imgY = 0;
 	private Image BLOCK_GRASS;
-	
+	public boolean hovering;
 	public World(){
 		BLOCK_GRASS = new ImageIcon("res/grass_30.png").getImage();
 		blocks = new Rectangle[Screen.GRID_LENGTH][Screen.GRID_LENGTH];

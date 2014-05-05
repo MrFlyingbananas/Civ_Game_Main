@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
@@ -22,9 +24,11 @@ public class GamePanel extends JPanel implements Runnable{
 	private static final int DELAYS_BEFORE_PAUSE = 10;
 	//game objects
 	private World world;
+	private Player player;
 	private Gold money = new Gold();
 	public GamePanel(){
 		world = new World();
+		player = new Player(world);
 		setPreferredSize(gameDim);
 		setVisible(true);
 		setFocusable(true);
@@ -51,6 +55,38 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 			public void keyTyped(KeyEvent e){
 	
+			}
+		});
+		addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				
+			}
+			@Override
+			public void mouseReleased(MouseEvent e){
+				
+			}
+			@Override
+			public void mouseClicked(MouseEvent e){
+				
+			}
+		});
+		addMouseMotionListener(new MouseAdapter(){
+			@Override
+			public void mouseMoved(MouseEvent e){
+				player.mouseMoved(e);
+			}
+			@Override
+			public void mouseDragged(MouseEvent e){
+				
+			}
+			@Override
+			public void mouseEntered(MouseEvent e){
+				
+			}
+			@Override
+			public void mouseExited(MouseEvent e){
+				
 			}
 		});
 	}
@@ -103,6 +139,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private void gameUpdate() {
 		if(running && game != null){
 			//update game state
+			player.update();
 		}
 		
 	}
@@ -123,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	private void draw(Graphics g) {
 		world.draw(g);
-		
+		player.draw(g);
 	}
 	private void paintScreen() {
 		Graphics g;
