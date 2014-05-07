@@ -24,11 +24,9 @@ public class Framework extends JPanel implements Runnable{
 	private static final int DELAYS_BEFORE_PAUSE = 10;
 	//game objects
 	private World world;
-	private Player player;
 	private Gold money = new Gold();
 	public Framework(){
 		world = new World();
-		player = new Player(world);
 		setPreferredSize(gameDim);
 		setVisible(true);
 		setFocusable(true);
@@ -68,13 +66,13 @@ public class Framework extends JPanel implements Runnable{
 			}
 			@Override
 			public void mouseClicked(MouseEvent e){
-				
+				world.mouseCLicked(e);
 			}
 		});
 		addMouseMotionListener(new MouseAdapter(){
 			@Override
 			public void mouseMoved(MouseEvent e){
-				player.mouseMoved(e);
+				world.mouseMoved(e);
 			}
 			@Override
 			public void mouseDragged(MouseEvent e){
@@ -139,7 +137,6 @@ public class Framework extends JPanel implements Runnable{
 	private void gameUpdate() {
 		if(running && game != null){
 			//update game state
-			player.update();
 		}
 		
 	}
@@ -160,7 +157,6 @@ public class Framework extends JPanel implements Runnable{
 	}
 	private void draw(Graphics g) {
 		world.draw(g);
-		player.draw(g);
 	}
 	private void paintScreen() {
 		Graphics g;
