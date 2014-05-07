@@ -8,7 +8,7 @@ public class Player {
 	private World world;
 	int hoverX;
 	int hoverY;
-	boolean hovering;
+	private boolean hovering;
 	public Player(World world){
 		this.world = world;
 	}
@@ -21,12 +21,13 @@ public class Player {
     	int x = e.getX();
     	int y = e.getY();
     	for(int i = 0; i < Screen.GRID_LENGTH; i+=30){
-    		for(int j = 0; j < Screen.GRID_LENGTH; i+=30){
+     		for(int j = 0; j < Screen.GRID_LENGTH; i+=30){
 				if( x > World.blocks[i][j].x && x < World.blocks[i][j].x + Screen.BLOCK_SIZE &&
     				y > World.blocks[i][j].y && y < World.blocks[i][j].y + Screen.BLOCK_SIZE){
     				hovering = true;
     				hoverX = World.blocks[i][j].x;
     				hoverY = World.blocks[i][j].y;
+    				break;
     			}else{
     				hovering = false;
     			}
@@ -34,7 +35,7 @@ public class Player {
     	}
     }
     public void update(){
-    	
+    	System.out.println(hovering);
     }
     public void draw(Graphics g){
     	drawBlockOutline(g);

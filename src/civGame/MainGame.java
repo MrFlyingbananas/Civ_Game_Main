@@ -4,16 +4,16 @@ import javax.swing.JFrame;
 
 public class MainGame extends JFrame {
 	
-	GamePanel gp;
+	Framework fw;
 	public MainGame(){
-		gp = new GamePanel();
+		fw = new Framework();
 	    setSize(Screen.WINDOW_WIDTH, Screen.WINDOW_HEIGHT);
 	    setLocationRelativeTo(null);
 	    setTitle("Farming Simulator");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setVisible(true);
 	    setResizable(false);
-	    add(gp);
+	    add(fw);
 	}
 	
 	public static void main (String[] args){

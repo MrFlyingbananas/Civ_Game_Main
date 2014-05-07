@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable{
+public class Framework extends JPanel implements Runnable{
 	//Double buffering
 	private Image dbImage;
 	private Graphics dbG;
@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private World world;
 	private Player player;
 	private Gold money = new Gold();
-	public GamePanel(){
+	public Framework(){
 		world = new World();
 		player = new Player(world);
 		setPreferredSize(gameDim);
