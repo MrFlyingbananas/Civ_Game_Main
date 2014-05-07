@@ -105,7 +105,7 @@ public class Framework extends JPanel implements Runnable{
 			sleepTime = (period - diff) - overSleepTime;
 			if(sleepTime < period && sleepTime > 0){
 				try {
-					game.sleep(sleepTime/1000000);
+					Thread.sleep(sleepTime/1000000);
 					overSleepTime = 0;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -115,7 +115,7 @@ public class Framework extends JPanel implements Runnable{
 				overSleepTime = diff - period;
 				//adds up delay
 			}else if(++delays > DELAYS_BEFORE_PAUSE){
-				game.yield();
+				Thread.yield();
 				delays = 0;
 				overSleepTime = 0;
 				//loop took less time then calculated but over sleep needs to be made up

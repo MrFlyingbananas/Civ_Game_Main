@@ -18,9 +18,9 @@ public class World {
 	public boolean hovering;
 	int hoverX, hoverY;
 	int selectX, selectY;
-	private Image selectBlockImg;
-	private Rectangle selectBlock;
-	boolean select;
+	public Image selectBlockImg;
+	public Rectangle selectBlock;
+	boolean select, hover;
 	public World(){
 		BLOCK_GRASS = new ImageIcon("res/grass_30.png").getImage();
 		blocks = new Rectangle[Screen.GRID_LENGTH][Screen.GRID_LENGTH];
@@ -29,8 +29,8 @@ public class World {
 	}
 	
 	private void setArrays(){
-		for(int i = 0; i<Screen.GRID_LENGTH;i++){
-			for(int e = 0; e<Screen.GRID_LENGTH;e++){
+		for(int i = 0; i<Screen.GRID_LENGTH/Screen.BLOCK_SIZE;i++){
+			for(int e = 0; e<Screen.GRID_LENGTH/Screen.BLOCK_SIZE;e++){
 				blockImg[i][e] = BLOCK_GRASS;
 				blocks[i][e] = new Rectangle(i*Screen.BLOCK_SIZE,e*Screen.BLOCK_SIZE, Screen.BLOCK_SIZE, Screen.BLOCK_SIZE);
 			}
@@ -51,8 +51,8 @@ public class World {
     */}
     
     public void draw(Graphics g){
-    	for(int i = 0; i<Screen.GRID_LENGTH;i++){
-			for(int e = 0; e<Screen.GRID_LENGTH;e++){
+    	for(int i = 0; i<Screen.GRID_LENGTH/Screen.BLOCK_SIZE;i++){
+			for(int e = 0; e<Screen.GRID_LENGTH/Screen.BLOCK_SIZE;e++){
 				g.drawImage(blockImg[i][e], blocks[i][e].x, blocks[i][e].y,null);
 			}
 		}
@@ -64,8 +64,10 @@ public class World {
        */
     }
     public void drawHoverOutline(Graphics g){
-    	g.setColor(Color.blue);
-		g.drawRect(hoverX, hoverY, Screen.BLOCK_SIZE, Screen.BLOCK_SIZE);
+    	if(hover){
+    		g.setColor(Color.blue);
+    		g.drawRect(hoverX, hoverY, Screen.BLOCK_SIZE, Screen.BLOCK_SIZE);
+    	}
     }
     public void drawSelectOutline(Graphics g){
     	if(select){
@@ -82,9 +84,10 @@ public class World {
     				y > blocks[i][j].y && y < blocks[i][j].y + Screen.BLOCK_SIZE){
     				hoverX = blocks[i][j].x;
     				hoverY = blocks[i][j].y;
+    				hover = true;
     				break;
     			}
-    		}
+     		}
     	}
     }
     public void mouseCLicked(MouseEvent e){
