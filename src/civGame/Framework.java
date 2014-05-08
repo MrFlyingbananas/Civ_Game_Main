@@ -4,30 +4,33 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class Framework extends JPanel implements Runnable{
+public class Framework extends JPanel implements Runnable, ActionListener{
 	//Double buffering
 	private Image dbImage;
 	private Graphics dbG;
-	//JPanel variables
-	static final Dimension gameDim = new Dimension(Screen.WINDOW_WIDTH, Screen.WINDOW_HEIGHT);
 	//game vars
 	private Thread game;
+	private Timer timer;
 	private volatile boolean running = false;
 	private long period = 6*1000000;  //ms >nano
 	private static final int DELAYS_BEFORE_PAUSE = 10;
+	public int foodPD, waterPD, stonePD, goldPD;
+	public int food, water, stone, gold, population;
 	//game objects
 	private World world;
-	private Gold money = new Gold();
 	public Framework(){
 		world = new World();
-		setPreferredSize(gameDim);
+		setPreferredSize(Screen.GAME_DIM);
 		setVisible(true);
 		setFocusable(true);
 		requestFocus();
@@ -129,7 +132,11 @@ public class Framework extends JPanel implements Runnable{
 					"sleepTime:		"+sleepTime / 1000000+"\n"+
 					"overSleepTime: "+overSleepTime+"\n"+
 					"delays:		"+delays+"\n"+
-					"Gold:			"+money.getGold()+"\n"
+					"Population		"+population+"\n"+
+					"Gold Per Day:	"+goldPD+"\n"+
+					"Stone Per Day	"+stonePD+"\n"+
+					"Food Per Day:	"+foodPD+"\n"+
+					"Water Per Day  "+waterPD+"\n"
 					
 			);
 		}
@@ -142,7 +149,7 @@ public class Framework extends JPanel implements Runnable{
 	}
 	private void gameRender() {
 		if(dbImage == null){
-			dbImage = createImage(Screen.WINDOW_WIDTH, Screen.WINDOW_HEIGHT);
+			dbImage = createImage(Screen.GAME_WINDOW_WIDTH, Screen.GAME_WINDOW_HEIGHT);
 			if(dbImage == null){
 				System.err.println("dbImage is null");
 				return;
@@ -151,7 +158,7 @@ public class Framework extends JPanel implements Runnable{
 			}
 		}
 		dbG.setColor(Color.white);
-		dbG.fillRect(0,0,Screen.WINDOW_WIDTH,Screen.WINDOW_HEIGHT);
+		dbG.fillRect(0,0,Screen.GAME_WINDOW_WIDTH,Screen.GAME_WINDOW_HEIGHT);
 		
 		draw(dbG);
 	}
@@ -171,11 +178,29 @@ public class Framework extends JPanel implements Runnable{
 		}
 		
 	}
-	
+	public void addFarm(){
+		World.blockImg[World.selectPlace1][World.selectPlace2] = TileImgs.FARM;
+		foodPD+=TileVars.FARM_FOOD_YILED;
+	}
+	public void addMine(){
+		World.blockImg[World.selectPlace1][World.selectPlace2] = TileImgs.MINE;
+		goldPD+=TileVars.MINE_GOLD_YIELD;
+		stonePD+=TileVars.MINE_STONE_YIELD;
+	}
+	public void addWell(){
+		World.blockImg[World.selectPlace1][World.selectPlace2] = TileImgs.WELL;
+		waterPD+=TileVars.WELL_WATER_YILED;
+	}
+	public void addHouse(){
+		World.blockImg[World.selectPlace1][World.selectPlace2] = TileImgs.HOUSE;
+		population+= TileVars.HOUSE_PEOPLE_YIELD;
+	}
 	private void startGame(){
 		if(game == null || !running){
 			game = new Thread(this);
+			timer = new Timer(TileVars.DAY_LENGTH*1000, this);
 			game.start();
+			
 			running = true;
 		}
 	}
@@ -186,5 +211,13 @@ public class Framework extends JPanel implements Runnable{
 	}
 	public void log(String s){
 		System.out.println(s);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		food+=foodPD;
+		water+=waterPD;
+		gold+=goldPD;
+		stone+=stonePD;
+		
 	}
 }
