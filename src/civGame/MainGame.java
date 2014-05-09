@@ -22,11 +22,8 @@ public class MainGame extends JFrame implements ActionListener{
 	public static JLabel food, gold, stone, water, population;
 	public static JLabel foodPD, goldPD, stonePD, waterPD;
 	private JLabel line;
-	private JLabel error;
-	private JFrame j;
 	private Framework fw;
-	private JPanel ip, ep;
-	private Timer timer;
+	private JPanel ip;
 	public MainGame(){
 		fw = new Framework();
 	    setSize(GameSettings.GAME_DIM);
@@ -78,7 +75,7 @@ public class MainGame extends JFrame implements ActionListener{
 		population = new JLabel("Population: "+String.valueOf(fw.population));
 		line = new JLabel("___________________");
 	}
-	public void createMenu(){
+	private void createMenu(){
 		ip.add(population);
 		ip.add(Box.createVerticalStrut(30));
 		ip.add(food);
@@ -127,7 +124,7 @@ public class MainGame extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		boolean errorCheck;
+/*		int errorCheck;
 		if(e.getSource() == bAddFarm){
 			errorCheck = fw.addFarm();
 			if(!errorCheck){
@@ -162,8 +159,9 @@ public class MainGame extends JFrame implements ActionListener{
 			}
 		}else if(e.getSource() == bOpenCostMenu){
 			new CostMenu();
-		}
+		}*/
 	}
+	
 	private void errorPopup(){
 		JOptionPane.showMessageDialog(null, "You do not have enough supplies for that operation!");
 	}

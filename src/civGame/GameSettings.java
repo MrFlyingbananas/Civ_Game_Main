@@ -31,19 +31,25 @@ public class GameSettings {
 	public final static Image MINE = new ImageIcon("res/mine.jpg").getImage();
 	public final static Image GRASS = new ImageIcon("res/grass_30.png").getImage();
 	
-	public final static int STARTING_FOOD = 4;
-	public final static int STARTING_WATER = 4;
-	public final static int STARTING_GOLD = 4;
+	public final static int STARTING_FOOD = 1234;
+	public final static int STARTING_WATER = 1234;
+	public final static int STARTING_GOLD = 1234;
 	public final static int STARTING_STONE = 1234;
-	public final static int STARTING_POPULATION = 4;
-	public final static int STARTING_FOOD_PER_DAY = 4;
-	public final static int STARTING_WATER_PER_DAY = 4;
-	public final static int STARTING_GOLD_PER_DAY = 4;
-	public final static int STARTING_STONE_PER_DAY = 4;
-	
+	public final static int STARTING_POPULATION = 1234;
+	public final static int STARTING_HOUSE_NUM = 1;
+	public final static int STARTING_FARM_NUM = 1;
+	public final static int STARTING_WELL_NUM = 1;
+	public final static int STARTING_MINE_NUM = 1;
+	public final static int STARTING_FOOD_PER_DAY = STARTING_FARM_NUM*4;
+	public final static int STARTING_WATER_PER_DAY = STARTING_WELL_NUM*4;
+	public final static int STARTING_GOLD_PER_DAY = STARTING_MINE_NUM*4;
+	public final static int STARTING_STONE_PER_DAY = STARTING_MINE_NUM*4;
 	
 	public final static int HOUSE_GOLD_COST = 60;
 	public final static int HOUSE_PEOPLE_YIELD = 10;
+	public final static int HOUSE_FOOD_COST = 4;
+	public final static int HOUSE_WATER_COST = 4;
+
 	
 	public final static int MINE_PEOPLE_COST = 5;
 	public final static int MINE_GOLD_YIELD = 80;
