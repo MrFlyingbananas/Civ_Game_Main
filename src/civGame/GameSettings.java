@@ -34,7 +34,7 @@ public class GameSettings {
 	public final static int STARTING_FOOD = 4;
 	public final static int STARTING_WATER = 4;
 	public final static int STARTING_GOLD = 4;
-	public final static int STARTING_STONE = 4;
+	public final static int STARTING_STONE = 1234;
 	public final static int STARTING_POPULATION = 4;
 	public final static int STARTING_FOOD_PER_DAY = 4;
 	public final static int STARTING_WATER_PER_DAY = 4;
@@ -56,7 +56,7 @@ public class GameSettings {
 	public final static int WELL_STONE_COST = 30;
 	public final static int WELL_WATER_YILED = 16;
 	
-	public final static int DAY_LENGTH = 10;
+	public final static int DAY_LENGTH = 5;
 	
 	
 }

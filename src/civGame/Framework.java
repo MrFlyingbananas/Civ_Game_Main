@@ -35,15 +35,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		setVisible(true);
 		setFocusable(true);
 		requestFocus();
-		food = GameSettings.STARTING_FOOD;
-		water = GameSettings.STARTING_WATER;
-		stone = GameSettings.STARTING_STONE;
-		gold = GameSettings.STARTING_GOLD;
-		population = GameSettings.STARTING_POPULATION;
-		foodPD = GameSettings.STARTING_FOOD_PER_DAY;
-		waterPD = GameSettings.STARTING_WATER_PER_DAY;
-		stonePD = GameSettings.STARTING_STONE_PER_DAY;
-		goldPD = GameSettings.STARTING_GOLD_PER_DAY;
+		initVars();
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode() == KeyEvent.VK_UP){
@@ -152,7 +144,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		}
 	}
 	public void initVars(){
-		
+		food = GameSettings.STARTING_FOOD;
+		water = GameSettings.STARTING_WATER;
+		stone = GameSettings.STARTING_STONE;
+		gold = GameSettings.STARTING_GOLD;
+		population = GameSettings.STARTING_POPULATION;
+		foodPD = GameSettings.STARTING_FOOD_PER_DAY;
+		waterPD = GameSettings.STARTING_WATER_PER_DAY;
+		stonePD = GameSettings.STARTING_STONE_PER_DAY;
+		goldPD = GameSettings.STARTING_GOLD_PER_DAY;
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -160,7 +160,10 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		water+=(waterPD-waterUsed);
 		gold+=goldPD;
 		stone+=stonePD;
-		
+		MainGame.food.setText("Food In Storage: "+String.valueOf(food));
+		MainGame.water.setText("Water In Storage: "+String.valueOf(water));
+		MainGame.gold.setText("Gold In Storage: "+String.valueOf(gold));
+		MainGame.stone.setText("Stone In Storage: "+String.valueOf(stone));
 	}
 	public boolean addFarm(){
 		boolean error = false;

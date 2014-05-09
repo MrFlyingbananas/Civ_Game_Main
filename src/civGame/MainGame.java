@@ -19,8 +19,8 @@ import javax.swing.border.EmptyBorder;
 
 public class MainGame extends JFrame implements ActionListener{
 	private JButton bAddFarm, bAddMine, bAddWell, bAddHouse, bOpenCostMenu;
-	private JLabel food, gold, stone, water, population;
-	private JLabel foodPD, goldPD, stonePD, waterPD;
+	public static JLabel food, gold, stone, water, population;
+	public static JLabel foodPD, goldPD, stonePD, waterPD;
 	private JLabel line;
 	private JLabel error;
 	private JFrame j;

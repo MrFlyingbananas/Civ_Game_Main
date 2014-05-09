@@ -7,7 +7,7 @@ public class CostMenu extends JFrame{
 	    setSize(GameSettings.COST_DIM);
 	    setLocationRelativeTo(null);
 	    setTitle("CostMenu");
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    setVisible(true);
 	    setResizable(false);
 	}
