@@ -2,8 +2,6 @@ package civGame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,7 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 public class MainGame extends JFrame implements ActionListener{
@@ -24,6 +21,7 @@ public class MainGame extends JFrame implements ActionListener{
 	private JLabel line;
 	private Framework fw;
 	private JPanel ip;
+	private CostMenu costMenu;
 	public MainGame(){
 		fw = new Framework();
 	    setSize(GameSettings.GAME_DIM);
@@ -33,7 +31,7 @@ public class MainGame extends JFrame implements ActionListener{
 	    setVisible(true);
 	    setResizable(false);
 	    add(fw);
-
+	    
 	    initJPanes();
 	    initButtons();
 	    initLabels();
@@ -124,45 +122,71 @@ public class MainGame extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-/*		int errorCheck;
+		int errorCheck;
 		if(e.getSource() == bAddFarm){
 			errorCheck = fw.addFarm();
-			if(!errorCheck){
-				foodPD.setText(String.valueOf("Food Per Day: "+String.valueOf(fw.goldPD)));
+			if(errorCheck == GameSettings.ERROR_NONE){
+				foodPD.setText(String.valueOf("Food Per Day: "+String.valueOf(fw.foodPD)));
+				gold.setText("Gold In Storage: "+String.valueOf(fw.gold));
 			}else{
-				errorPopup();
+				errorPopup(errorCheck);
 			}
 			
 		}else if(e.getSource() == bAddMine){
 			errorCheck = fw.addMine();
-			if(!errorCheck){
+			if(errorCheck == GameSettings.ERROR_NONE){
 				goldPD.setText("Gold Per Day: "+String.valueOf(fw.goldPD));
 				stonePD.setText("Stone Per Day: "+String.valueOf(fw.stonePD));
+				population.setText("Population: "+String.valueOf(fw.population));
 			}else{
-				errorPopup();
+				errorPopup(errorCheck);
 			}
 			
 		}else if(e.getSource() == bAddHouse){
 			errorCheck = fw.addHouse();
-			if(!errorCheck){
+			if(errorCheck == GameSettings.ERROR_NONE){
 				population.setText("Population: "+String.valueOf(fw.population));
+				gold.setText("Gold In Storage: "+String.valueOf(fw.gold));
 			}else{
-				errorPopup();
+				errorPopup(errorCheck);
 			}
 			
 		}else if(e.getSource() == bAddWell){
 			errorCheck = fw.addWell();
-			if(!errorCheck){
+			if(errorCheck == GameSettings.ERROR_NONE){
 				waterPD.setText("Water Per Day: "+String.valueOf(fw.waterPD));
+				stone.setText("Stone in Storage"+String.valueOf(fw.stone));
 			}else{
-				errorPopup();
+				errorPopup(errorCheck);
 			}
 		}else if(e.getSource() == bOpenCostMenu){
-			new CostMenu();
-		}*/
+			if(costMenu == null){
+				costMenu = new CostMenu();
+			}else if(costMenu != null && !costMenu.isShowing()){
+				costMenu.dispose();
+				costMenu = new CostMenu();
+			}else{
+				costMenu.requestFocus();
+			}
+		}
 	}
-	
-	private void errorPopup(){
-		JOptionPane.showMessageDialog(null, "You do not have enough supplies for that operation!");
+	public void nullCostMenu(){
+		costMenu = null;
+	}
+	private void errorPopup(int errorNum){
+		switch(errorNum){
+			case GameSettings.ERROR_NONE:
+				
+				break;
+			case GameSettings.ERROR_OCCUPIED_TILE:
+				JOptionPane.showMessageDialog(null, "You cannot place a building ontop of another!");
+				break;
+			case GameSettings.ERROR_INSUFFICENT_RESOURCES:
+				JOptionPane.showMessageDialog(null, "You do not have enough supplies for that operation!");
+				break;
+			case GameSettings.ERROR_CODE:
+				JOptionPane.showMessageDialog(null, "Error in code.");
+				break;
+		}
 	}
 }

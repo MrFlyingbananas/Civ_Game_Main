@@ -91,4 +91,27 @@ public class World {
     		}
     	}
     }
+    public void mouseDragged(MouseEvent e){
+    	int x = e.getX();
+    	int y = e.getY();
+    	hover = false;
+    	for(int j = 0; j < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; j++){
+     		for(int i = 0; i < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; i++){
+				if( x > blocks[i][j].x && x < blocks[i][j].x + GameSettings.BLOCK_SIZE &&
+    				y > blocks[i][j].y && y < blocks[i][j].y + GameSettings.BLOCK_SIZE){
+    				selectX = blocks[i][j].x;
+    				selectY = blocks[i][j].y;
+    				selectPlace1 = i;
+    				selectPlace2 = j;
+    				selectBlockImg = blockImg[i][j];
+    				selectBlock = blocks[i][j];
+    				select = true;
+    				break;
+    			}
+    		}
+    	}
+    }
+    public void setHover(boolean hover){
+    	this.hover = hover;
+    }
 }

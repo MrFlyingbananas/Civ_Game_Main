@@ -27,7 +27,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	public int foodPD, waterPD, stonePD, goldPD;
 	public int food, water, stone, gold, population;
 	private int waterUsed, foodUsed;
-	private int houseNum, farmNum, wellNum, mineNum;
+	private int houseNum;
 	//game objects
 	private World world;
 	public Framework(){
@@ -39,18 +39,6 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		initVars();
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
-				if(e.getKeyCode() == KeyEvent.VK_UP){
-				
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_DOWN){
-				
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-				
-				}
-				else if(e.getKeyCode() == KeyEvent.VK_LEFT){
-				
-				}
 				
 			}
 			public void keyReleased(KeyEvent e){
@@ -63,11 +51,11 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e){
-				
+
 			}
 			@Override
 			public void mouseReleased(MouseEvent e){
-				
+
 			}
 			@Override
 			public void mouseClicked(MouseEvent e){
@@ -81,7 +69,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}
 			@Override
 			public void mouseDragged(MouseEvent e){
-				
+				world.mouseDragged(e);
 			}
 			@Override
 			public void mouseEntered(MouseEvent e){
@@ -127,7 +115,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}else{
 				overSleepTime = 0;
 			}
-			log(
+		/*	log(
 					"beforeTime:	"+beforeTime+"\n"+
 					"afterTime:		"+afterTime+"\n"+
 					"diff:			"+diff+"\n"+
@@ -142,6 +130,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 					"Water:			"+water+"\n"
 					
 			);
+			*/
 		}
 	}
 	private void initVars(){
@@ -155,9 +144,6 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		stonePD = GameSettings.STARTING_STONE_PER_DAY;
 		goldPD = GameSettings.STARTING_GOLD_PER_DAY;
 		houseNum = GameSettings.STARTING_HOUSE_NUM;
-		farmNum = GameSettings.STARTING_FARM_NUM;
-		wellNum = GameSettings.STARTING_WELL_NUM;
-		mineNum = GameSettings.STARTING_MINE_NUM;
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -173,50 +159,68 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		MainGame.stone.setText("Stone In Storage: "+String.valueOf(stone));
 	}
 	public int addFarm(){
-		int error = 0;
+		int error = GameSettings.ERROR_NONE;
 		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 		  population > GameSettings.FARM_PEOPLE_COST && gold > GameSettings.FARM_GOLD_COST){
 			
 			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
 			foodPD+=GameSettings.FARM_FOOD_YILED;
-		}else{
-			error = 1;
+			gold-=GameSettings.FARM_GOLD_COST;
+		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+			error = GameSettings.ERROR_OCCUPIED_TILE;
+			
+		}else if(population < GameSettings.FARM_PEOPLE_COST || gold < GameSettings.FARM_GOLD_COST){
+			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 		}
 		return error;
 	}
 	public int addMine(){
-		int error = 0;
+		int error = GameSettings.ERROR_NONE;
 		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 			population > GameSettings.MINE_PEOPLE_COST){
 			
 			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
 			goldPD+=GameSettings.MINE_GOLD_YIELD;
 			stonePD+=GameSettings.MINE_STONE_YIELD;
-		}else{
-			error = 1;
+			population-=GameSettings.MINE_PEOPLE_COST;
+		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+			error = GameSettings.ERROR_OCCUPIED_TILE;
+			
+		}else if(population < GameSettings.MINE_PEOPLE_COST){
+			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 		}
 		return error;
 	}
 	public int addWell(){
-		int error = 0;
+		int error = GameSettings.ERROR_NONE;
 		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
-				stone > GameSettings.WELL_STONE_COST){
+			stone > GameSettings.WELL_STONE_COST){
+			
 			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
 			waterPD+=GameSettings.WELL_WATER_YILED;
-		}else{
-			error = 1;
+			stone-=GameSettings.WELL_STONE_COST;
+		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+			error = GameSettings.ERROR_OCCUPIED_TILE;
+			
+		}else if(stone < GameSettings.WELL_STONE_COST){
+			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 		}
 		return error;
 	}
 	public int addHouse(){
-		int error = 0;
+		int error = GameSettings.ERROR_NONE;
 		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 				gold > GameSettings.HOUSE_GOLD_COST){
 			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.HOUSE;
 			population+= GameSettings.HOUSE_PEOPLE_YIELD;
+			gold-=GameSettings.HOUSE_GOLD_COST;
 			houseNum++;
+		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+			error = GameSettings.ERROR_OCCUPIED_TILE;
+		}else if(gold < GameSettings.HOUSE_GOLD_COST){
+			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 		}else{
-			error = 1;
+			error = GameSettings.ERROR_CODE;
 		}
 		return error;
 	}

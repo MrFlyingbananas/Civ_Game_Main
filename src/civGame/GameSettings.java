@@ -17,7 +17,7 @@ public class GameSettings {
 	public static final Dimension COST_DIM = new Dimension(COST_WINDOW_WIDTH, COST_WINDOW_HEIGHT);
 	
 	//Game vars
-	public static final int GAME_WINDOW_WIDTH = 1097;
+	public static final int GAME_WINDOW_WIDTH = 1113;
 	public static final int GAME_WINDOW_HEIGHT = 928;
 	public static final int BLOCK_SIZE = 30;
 	public static final int GRID_LENGTH = 900;
@@ -64,5 +64,10 @@ public class GameSettings {
 	
 	public final static int DAY_LENGTH = 5;
 	
+	
+	public final static int ERROR_NONE = 0;
+	public final static int ERROR_INSUFFICENT_RESOURCES = 1;
+	public final static int ERROR_OCCUPIED_TILE = 2;
+	public final static int ERROR_CODE = 999;
 	
 }
