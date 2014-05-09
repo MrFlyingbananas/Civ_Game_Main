@@ -11,6 +11,11 @@ public class GameSettings {
 	public static final int TITLE_WINDOW_WIDTH = 400;
 	public static final Dimension TITLE_DIM = new Dimension(TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT);
 	
+	//cost menu vars
+	public static final int COST_WINDOW_HEIGHT = 600;
+	public static final int COST_WINDOW_WIDTH = 400;
+	public static final Dimension COST_DIM = new Dimension(COST_WINDOW_WIDTH, COST_WINDOW_HEIGHT);
+	
 	//Game vars
 	public static final int GAME_WINDOW_WIDTH = 1097;
 	public static final int GAME_WINDOW_HEIGHT = 928;
@@ -26,7 +31,15 @@ public class GameSettings {
 	public final static Image MINE = new ImageIcon("res/mine.jpg").getImage();
 	public final static Image GRASS = new ImageIcon("res/grass_30.png").getImage();
 	
-	
+	public final static int STARTING_FOOD = 4;
+	public final static int STARTING_WATER = 4;
+	public final static int STARTING_GOLD = 4;
+	public final static int STARTING_STONE = 4;
+	public final static int STARTING_POPULATION = 4;
+	public final static int STARTING_FOOD_PER_DAY = 4;
+	public final static int STARTING_WATER_PER_DAY = 4;
+	public final static int STARTING_GOLD_PER_DAY = 4;
+	public final static int STARTING_STONE_PER_DAY = 4;
 	
 	
 	public final static int HOUSE_GOLD_COST = 60;

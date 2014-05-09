@@ -20,7 +20,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	private Graphics dbG;
 	//game vars
 	private Thread game;
-	private Timer timer;
+	private Timer dayTimer;
 	private volatile boolean running = false;
 	private long period = 6*1000000;  //ms >nano
 	private static final int DELAYS_BEFORE_PAUSE = 10;
@@ -35,7 +35,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		setVisible(true);
 		setFocusable(true);
 		requestFocus();
-		
+		food = GameSettings.STARTING_FOOD;
+		water = GameSettings.STARTING_WATER;
+		stone = GameSettings.STARTING_STONE;
+		gold = GameSettings.STARTING_GOLD;
+		population = GameSettings.STARTING_POPULATION;
+		foodPD = GameSettings.STARTING_FOOD_PER_DAY;
+		waterPD = GameSettings.STARTING_WATER_PER_DAY;
+		stonePD = GameSettings.STARTING_STONE_PER_DAY;
+		goldPD = GameSettings.STARTING_GOLD_PER_DAY;
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode() == KeyEvent.VK_UP){
@@ -143,11 +151,88 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			);
 		}
 	}
+	public void initVars(){
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		food+=(foodPD-foodUsed);
+		water+=(waterPD-waterUsed);
+		gold+=goldPD;
+		stone+=stonePD;
+		
+	}
+	public boolean addFarm(){
+		boolean error = false;
+		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+		  population > GameSettings.FARM_PEOPLE_COST && gold > GameSettings.FARM_GOLD_COST){
+			
+			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
+			foodPD+=GameSettings.FARM_FOOD_YILED;
+		}else{
+			error = true;
+		}
+		return error;
+	}
+	public boolean addMine(){
+		boolean error = false;
+		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+			population > GameSettings.MINE_PEOPLE_COST){
+			
+			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
+			goldPD+=GameSettings.MINE_GOLD_YIELD;
+			stonePD+=GameSettings.MINE_STONE_YIELD;
+		}else{
+			error = true;
+		}
+		return error;
+	}
+	public boolean addWell(){
+		boolean error = false;
+		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+				stone > GameSettings.WELL_STONE_COST){
+			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
+			waterPD+=GameSettings.WELL_WATER_YILED;
+		}else{
+			error = true;
+		}
+		return error;
+	}
+	public boolean addHouse(){
+		boolean error = false;
+		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+				gold > GameSettings.HOUSE_GOLD_COST){
+			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.HOUSE;
+			population+= GameSettings.HOUSE_PEOPLE_YIELD;
+		}else{
+			error = true;
+		}
+		return error;
+	}
+
+	private void startGame(){
+		if(game == null || !running){
+			game = new Thread(this);
+			dayTimer = new Timer(GameSettings.DAY_LENGTH*1000, this);
+			dayTimer.start();
+			game.start();
+			
+			running = true;
+		}
+		
+	}
+	public void stopGame(){
+		if(running){
+			running = false;
+		}
+	}
+	public void log(String s){
+		System.out.println(s);
+	}
 	private void gameUpdate() {
 		if(running && game != null){
 			//update game state
 		}
-		
 	}
 	private void gameRender() {
 		if(dbImage == null){
@@ -178,50 +263,5 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-	}
-	public void addFarm(){
-		World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
-		foodPD+=GameSettings.FARM_FOOD_YILED;
-	}
-	public void addMine(){
-		World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
-		goldPD+=GameSettings.MINE_GOLD_YIELD;
-		stonePD+=GameSettings.MINE_STONE_YIELD;
-	}
-	public void addWell(){
-		World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
-		waterPD+=GameSettings.WELL_WATER_YILED;
-	}
-	public void addHouse(){
-		World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.HOUSE;
-		population+= GameSettings.HOUSE_PEOPLE_YIELD;
-	}
-	private void startGame(){
-		if(game == null || !running){
-			game = new Thread(this);
-			timer = new Timer(GameSettings.DAY_LENGTH*1000, this);
-			timer.start();
-			game.start();
-			
-			running = true;
-		}
-		
-	}
-	public void stopGame(){
-		if(running){
-			running = false;
-		}
-	}
-	public void log(String s){
-		System.out.println(s);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		food+=(foodPD-foodUsed);
-		water+=(waterPD-waterUsed);
-		gold+=goldPD;
-		stone+=stonePD;
-		
 	}
 }
