@@ -4,17 +4,12 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 public class CostMenu extends JFrame{
-	private boolean running;
 	public CostMenu(){
 	    setSize(GameSettings.COST_DIM);
 	    setLocationRelativeTo(null);
-	    setTitle("CostMenu");
+	    setTitle("Block Information Panel");
 	    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	    setVisible(true);
 	    setResizable(false);
-	    running = true;
-	}
-	public boolean isRunning(){
-		return running;
 	}
 }

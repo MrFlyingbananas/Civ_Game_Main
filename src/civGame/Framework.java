@@ -14,40 +14,75 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+@SuppressWarnings("serial")
 public class Framework extends JPanel implements Runnable, ActionListener{
-	//Double buffering
-	private Image dbImage;
-	private Graphics dbG;
 	//game vars
 	private Thread game;
-	private Timer dayTimer;
+	private Timer dayTimer, tmr;
 	private volatile boolean running = false;
 	private long period = 6*1000000;  //ms >nano
 	private static final int DELAYS_BEFORE_PAUSE = 10;
 	public int foodPD, waterPD, stonePD, goldPD;
 	public int food, water, stone, gold, population;
 	private int waterUsed, foodUsed;
-	private int houseNum;
+	private int houseNum, farmNum, wellNum, mineNum;
 	//game objects
 	private World world;
 	public Framework(){
 		world = new World();
-		setPreferredSize(GameSettings.GAME_DIM);
 		setVisible(true);
 		setFocusable(true);
 		requestFocus();
 		initVars();
 		addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent e){
+			public void keyPressed(KeyEvent e){	
+		/*		if(e.getKeyCode() == KeyEvent.VK_UP){
+					world.navMap(World.MAP_UP);
+					world.setSelect(false);
+				}
 				
+				if(e.getKeyCode() == KeyEvent.VK_DOWN){
+					world.navMap(World.MAP_DOWN);
+					world.setSelect(false);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_LEFT){
+					world.navMap(World.MAP_LEFT);
+					world.setSelect(false);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+					world.navMap(World.MAP_RIGHT);
+					world.setSelect(false);
+				}
+				System.out.println("KeyPressed");
 			}
 			public void keyReleased(KeyEvent e){
-			
+				if(e.getKeyCode() == KeyEvent.VK_UP){
+					world.stopYMove();
+				}
+				if(e.getKeyCode() == KeyEvent.VK_DOWN){
+					world.stopYMove();
+				}
+				if(e.getKeyCode() == KeyEvent.VK_LEFT){
+					world.stopXMove();
+				}
+				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+					world.stopXMove();
+				}
+				System.out.println("KeyReleased");
 			}
 			public void keyTyped(KeyEvent e){
-	
-			}
+				if(e.getKeyCode() == KeyEvent.VK_UP){
+					if(world.Screen.y > world.blocks[0][0].y+10){
+						world.navMap(World.MAP_UP);
+						world.setSelect(false);
+					}else{
+						world.stopYMove();
+					}	
+				}
+				System.out.println("keyTyped");
+			*/}
 		});
+		
 		addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e){
@@ -90,9 +125,11 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		int delays = 0;
 		while(running){
 			beforeTime = System.nanoTime();
+			//GameMenu.refreshAllJLabels();
 			gameUpdate();
-			gameRender();
-			paintGameSettings();
+			//gameRender();
+			//paintGameSettings();
+			repaint();
 			afterTime = System.nanoTime();
 			diff = afterTime - beforeTime;
 			sleepTime = (period - diff) - overSleepTime;
@@ -115,24 +152,25 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}else{
 				overSleepTime = 0;
 			}
-		/*	log(
-					"beforeTime:	"+beforeTime+"\n"+
-					"afterTime:		"+afterTime+"\n"+
-					"diff:			"+diff+"\n"+
-					"sleepTime:		"+sleepTime / 1000000+"\n"+
-					"overSleepTime: "+overSleepTime+"\n"+
-					"delays:		"+delays+"\n"+
-					"Population		"+population+"\n"+
-					"Gold Per Day:	"+goldPD+"\n"+
-					"Stone Per Day	"+stonePD+"\n"+
-					"Food Per Day:	"+foodPD+"\n"+
-					"Water Per Day  "+waterPD+"\n"+
-					"Water:			"+water+"\n"
+			//log(
+					//"beforeTime:	"+beforeTime+"\n"+
+					//"afterTime:		"+afterTime+"\n"+
+					//"diff:			"+diff+"\n"+
+					//"sleepTime:		"+sleepTime / 1000000+"\n"+
+					//"overSleepTime: "+overSleepTime+"\n"+
+					//"delays:		"+delays+"\n"+
+					//"Population		"+population+"\n"+
+					//"Gold Per Day:	"+goldPD+"\n"+
+					//"Stone Per Day	"+stonePD+"\n"+
+					//"Food Per Day:	"+foodPD+"\n"+
+					//"Water Per Day  "+waterPD+"\n"+
+					//"Water:			"+water+"\n"
 					
-			);
-			*/
+		//	);
+			
 		}
 	}
+
 	private void initVars(){
 		food = GameSettings.STARTING_FOOD;
 		water = GameSettings.STARTING_WATER;
@@ -144,83 +182,148 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		stonePD = GameSettings.STARTING_STONE_PER_DAY;
 		goldPD = GameSettings.STARTING_GOLD_PER_DAY;
 		houseNum = GameSettings.STARTING_HOUSE_NUM;
+		farmNum = GameSettings.STARTING_FARM_NUM;
+		wellNum = GameSettings.STARTING_WELL_NUM;
+		mineNum = GameSettings.STARTING_MINE_NUM;
+	}
+	private void gameUpdate(){
+		world.moveMap();
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		waterUsed = houseNum*GameSettings.HOUSE_WATER_COST;
-		foodUsed = houseNum*GameSettings.HOUSE_FOOD_COST;
-		food+=(foodPD-foodUsed);
-		water+=(waterPD-waterUsed);
-		gold+=goldPD;
-		stone+=stonePD;
-		MainGame.food.setText("Food In Storage: "+String.valueOf(food));
-		MainGame.water.setText("Water In Storage: "+String.valueOf(water));
-		MainGame.gold.setText("Gold In Storage: "+String.valueOf(gold));
-		MainGame.stone.setText("Stone In Storage: "+String.valueOf(stone));
+		if(e.getSource() == dayTimer){
+			food+=foodPD;
+			water+=waterPD;
+			gold+=goldPD;
+			stone+=stonePD;
+		
+			GameMenu.food.setText("Food In Storage: "+String.valueOf(food));
+			GameMenu.water.setText("Water In Storage: "+String.valueOf(water));
+			GameMenu.gold.setText("Gold In Storage: "+String.valueOf(gold));
+			GameMenu.stone.setText("Stone In Storage: "+String.valueOf(stone));
+		}
+		if(e.getSource() == tmr){
+			calcPDVars();
+			GameMenu.refreshAllJLabels();
+		}
+	}
+	public void calcPDVars(){
+		if(GameMenu.upgradeMenu != null && GameMenu.upgradeMenu.farmIsUpgraded()){
+			waterUsed = (houseNum*GameSettings.HOUSE_WATER_COST)
+					+(farmNum*GameSettings.FARM_UPGRADE_WATER_USAGE_MULT*GameSettings.FARM_WATER_COST);
+					foodUsed = houseNum*GameSettings.HOUSE_FOOD_COST;
+		}else{
+			waterUsed = (houseNum*GameSettings.HOUSE_WATER_COST)+(farmNum*GameSettings.FARM_WATER_COST);
+			foodUsed = houseNum*GameSettings.HOUSE_FOOD_COST;
+		}
+		if(GameMenu.upgradeMenu != null && GameMenu.upgradeMenu.farmIsUpgraded()){
+			foodPD = (farmNum*GameSettings.FARM_FOOD_YILED*GameSettings.FARM_UPGRADE_MULT)-foodUsed;
+		}else{
+			foodPD = (farmNum*GameSettings.FARM_FOOD_YILED)-foodUsed;
+		}
+		if(GameMenu.upgradeMenu != null && GameMenu.upgradeMenu.wellIsUpgraded()){
+			waterPD = (wellNum*GameSettings.WELL_UPGRADE_MULT*GameSettings.WELL_WATER_YILED)-waterUsed;
+		}else{
+			waterPD = wellNum*GameSettings.WELL_WATER_YILED-waterUsed;
+		}
+		if(GameMenu.upgradeMenu != null && GameMenu.upgradeMenu.mineIsUpgraded()){
+			goldPD =(mineNum*GameSettings.MINE_GOLD_UPGRADE_MULT)*GameSettings.MINE_GOLD_YIELD;
+			stonePD = (mineNum*25)*GameSettings.MINE_STONE_UPGRADE_MULT;
+		}else{
+			goldPD = mineNum*GameSettings.MINE_GOLD_YIELD;
+			stonePD = mineNum*GameSettings.MINE_STONE_YIELD;
+		}
 	}
 	public int addFarm(){
-		int error = GameSettings.ERROR_NONE;
-		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
-		  population > GameSettings.FARM_PEOPLE_COST && gold > GameSettings.FARM_GOLD_COST){
+		int error = GameSettings.ERROR_NO_BLOCK_SELECTED;
+		if(World.selectPlace1 != -1){
+			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+					population > GameSettings.FARM_PEOPLE_COST && gold > GameSettings.FARM_GOLD_COST){
 			
-			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
-			foodPD+=GameSettings.FARM_FOOD_YILED;
-			gold-=GameSettings.FARM_GOLD_COST;
-		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
-			error = GameSettings.ERROR_OCCUPIED_TILE;
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
+				farmNum++;
+				population-=GameSettings.FARM_PEOPLE_COST;
+				gold-=GameSettings.FARM_GOLD_COST;
+				error = GameSettings.ERROR_NONE;
+			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
-		}else if(population < GameSettings.FARM_PEOPLE_COST || gold < GameSettings.FARM_GOLD_COST){
-			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}else if(population < GameSettings.FARM_PEOPLE_COST || gold < GameSettings.FARM_GOLD_COST){
+				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}
 		}
 		return error;
 	}
 	public int addMine(){
-		int error = GameSettings.ERROR_NONE;
-		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
-			population > GameSettings.MINE_PEOPLE_COST){
+		int error = GameSettings.ERROR_NO_BLOCK_SELECTED;
+		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
+			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+					population > GameSettings.MINE_PEOPLE_COST){
+				
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
+				mineNum++;
+				population-=GameSettings.MINE_PEOPLE_COST;
+				error = GameSettings.ERROR_NONE;
+			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
-			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
-			goldPD+=GameSettings.MINE_GOLD_YIELD;
-			stonePD+=GameSettings.MINE_STONE_YIELD;
-			population-=GameSettings.MINE_PEOPLE_COST;
-		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
-			error = GameSettings.ERROR_OCCUPIED_TILE;
-			
-		}else if(population < GameSettings.MINE_PEOPLE_COST){
-			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}else if(population < GameSettings.MINE_PEOPLE_COST){
+				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}
 		}
 		return error;
 	}
 	public int addWell(){
-		int error = GameSettings.ERROR_NONE;
-		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
-			stone > GameSettings.WELL_STONE_COST){
+		int error = GameSettings.ERROR_NO_BLOCK_SELECTED;
+		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
+			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+					stone > GameSettings.WELL_STONE_COST){
 			
-			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
-			waterPD+=GameSettings.WELL_WATER_YILED;
-			stone-=GameSettings.WELL_STONE_COST;
-		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
-			error = GameSettings.ERROR_OCCUPIED_TILE;
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
+				wellNum++;
+				error = GameSettings.ERROR_NONE;
+			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
-		}else if(stone < GameSettings.WELL_STONE_COST){
-			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}else if(stone < GameSettings.WELL_STONE_COST){
+				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}
+		}
+		return error;
+	}
+	public int addWorkshop(){
+		int error = GameSettings.ERROR_NO_BLOCK_SELECTED;
+		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
+			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+					gold > GameSettings.WORKSHOP_GOLD_COST){
+			
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
+				gold-=GameSettings.WORKSHOP_GOLD_COST;
+				error = GameSettings.ERROR_NONE;
+			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+				error = GameSettings.ERROR_OCCUPIED_TILE;
+			
+			}else if(gold < GameSettings.WORKSHOP_GOLD_COST){
+				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}	
 		}
 		return error;
 	}
 	public int addHouse(){
-		int error = GameSettings.ERROR_NONE;
-		if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
+		int error = GameSettings.ERROR_NO_BLOCK_SELECTED;
+		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
+			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 				gold > GameSettings.HOUSE_GOLD_COST){
-			World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.HOUSE;
-			population+= GameSettings.HOUSE_PEOPLE_YIELD;
-			gold-=GameSettings.HOUSE_GOLD_COST;
-			houseNum++;
-		}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
-			error = GameSettings.ERROR_OCCUPIED_TILE;
-		}else if(gold < GameSettings.HOUSE_GOLD_COST){
-			error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
-		}else{
-			error = GameSettings.ERROR_CODE;
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.HOUSE;
+				population+= GameSettings.HOUSE_PEOPLE_YIELD;
+				gold-=GameSettings.HOUSE_GOLD_COST;
+				houseNum++;
+				error = GameSettings.ERROR_NONE;
+			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
+				error = GameSettings.ERROR_OCCUPIED_TILE;
+			}else if(gold < GameSettings.HOUSE_GOLD_COST){
+				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+			}
 		}
 		return error;
 	}
@@ -229,7 +332,9 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		if(game == null || !running){
 			game = new Thread(this);
 			dayTimer = new Timer(GameSettings.DAY_LENGTH*1000, this);
+			tmr = new Timer(100, this);
 			dayTimer.start();
+			tmr.start();
 			game.start();
 			
 			running = true;
@@ -244,39 +349,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	private void log(String s){
 		System.out.println(s);
 	}
-	private void gameUpdate() {
-		if(running && game != null){
-			//update game state
-		}
-	}
-	private void gameRender() {
-		if(dbImage == null){
-			dbImage = createImage(GameSettings.GAME_WINDOW_WIDTH, GameSettings.GAME_WINDOW_HEIGHT);
-			if(dbImage == null){
-				System.err.println("dbImage is null");
-				return;
-			}else{
-				dbG = dbImage.getGraphics();
-			}
-		}
-		dbG.setColor(Color.white);
-		dbG.fillRect(0,0,GameSettings.GAME_WINDOW_WIDTH,GameSettings.GAME_WINDOW_HEIGHT);
-		
-		draw(dbG);
-	}
-	private void draw(Graphics g) {
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		world.draw(g);
-	}
-	private void paintGameSettings() {
-		Graphics g;
-		try{
-			g = this.getGraphics();
-			if(dbImage != null && g != null){
-				g.drawImage(dbImage, 0, 0, null);
-			}
-			g.dispose();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
 	}
 }

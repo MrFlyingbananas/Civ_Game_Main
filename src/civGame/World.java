@@ -18,13 +18,20 @@ public class World {
 	public int selectX, selectY;
 	public static int selectPlace1 = -1;
 	public static int selectPlace2 = -1;
-	Image selectBlockImg;
-	Rectangle selectBlock;
-	boolean select, hover;
+	public Image selectBlockImg;
+	public Rectangle selectBlock;
+	public Rectangle Screen;
+	private boolean select, hover;
+	private int xDirection = 0, yDirection = 0;
+	public static final int MAP_UP = 0;
+	public static final int MAP_DOWN = 1;
+	public static final int MAP_LEFT = 2;
+	public static final int MAP_RIGHT = 3;
 	public World(){
 		blocks = new Rectangle[GameSettings.GRID_LENGTH][GameSettings.GRID_LENGTH];
 		blockImg = new Image[GameSettings.GRID_LENGTH][GameSettings.GRID_LENGTH];
 		setArrays();
+		Screen = new Rectangle(0, 0, GameSettings.GRID_LENGTH, GameSettings.GRID_LENGTH);
 	}
 	
 	private void setArrays(){
@@ -111,7 +118,48 @@ public class World {
     		}
     	}
     }
-    public void setHover(boolean hover){
-    	this.hover = hover;
+    public void setSelect(boolean select){
+    	this.select = select;
     }
+    
+	public void moveMap() {
+		for(int j = 0; j < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; j++){
+			for(int i = 0; i < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; i++){
+				blocks[i][j].x+=xDirection;
+				blocks[i][j].y+=yDirection;
+			}
+		}
+		
+	}
+	public void stopXMove(){
+		xDirection = 0;
+	}
+	public void stopYMove(){
+		yDirection = 0;
+	}
+	private void setXDirection(int dir){
+		xDirection = dir;
+	}
+	private void setYDirection(int dir){
+		yDirection = dir;
+	}
+	public void navMap(int nav){
+		switch(nav){
+		case MAP_UP:
+			
+			setYDirection(-GameSettings.MAP_SCROLL_SPEED);
+
+			break;
+		case MAP_DOWN:
+			setYDirection(GameSettings.MAP_SCROLL_SPEED);
+
+			break;
+		case MAP_LEFT:
+			setXDirection(-GameSettings.MAP_SCROLL_SPEED);
+			break;
+		case MAP_RIGHT:
+			setXDirection(GameSettings.MAP_SCROLL_SPEED);
+			break;
+		}
+	}
 }
