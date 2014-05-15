@@ -350,7 +350,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 					gold > GameSettings.WORKSHOP_GOLD_COST){
 			
-				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WROKSHOP;
 				gold-=GameSettings.WORKSHOP_GOLD_COST;
 				error = GameSettings.ERROR_NONE;
 				buildQueue.add(world.selectBlock);

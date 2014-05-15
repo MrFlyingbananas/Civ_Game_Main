@@ -26,11 +26,11 @@ public class GameSettings {
 	
 	
 	public final static Image FARM = new ImageIcon("res/farm.jpg").getImage();
-	public final static Image HOUSE = new ImageIcon("res/farm.jpg").getImage();
+	public final static Image HOUSE = new ImageIcon("res/house.jpg").getImage();
 	public final static Image WELL = new ImageIcon("res/well.jpg").getImage();
 	public final static Image MINE = new ImageIcon("res/mine.jpg").getImage();
 	public final static Image GRASS = new ImageIcon("res/grass_30.png").getImage();
-	
+	public final static Image WORKSHOP = new ImageIcon("res/workshop.jpg").getImage();
 	
 	public final static int HOUSE_GOLD_COST = 60;
 	public final static int HOUSE_PEOPLE_YIELD = 10;
