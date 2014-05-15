@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
@@ -23,6 +24,7 @@ public class World {
 	public Rectangle Screen;
 	private boolean select, hover;
 	private int xDirection = 0, yDirection = 0;
+	private static ArrayList<Rectangle> buildQueueBlocks;
 	public static final int MAP_UP = 0;
 	public static final int MAP_DOWN = 1;
 	public static final int MAP_LEFT = 2;
@@ -32,6 +34,7 @@ public class World {
 		blockImg = new Image[GameSettings.GRID_LENGTH][GameSettings.GRID_LENGTH];
 		setArrays();
 		Screen = new Rectangle(0, 0, GameSettings.GRID_LENGTH, GameSettings.GRID_LENGTH);
+		buildQueueBlocks = new ArrayList<Rectangle>();
 	}
 	
 	private void setArrays(){
@@ -51,6 +54,7 @@ public class World {
 		}
     	drawHoverOutline(g);
     	drawSelectOutline(g);
+    	drawQueue(g);
     }
     public void drawHoverOutline(Graphics g){
     	if(hover){
@@ -121,7 +125,6 @@ public class World {
     public void setSelect(boolean select){
     	this.select = select;
     }
-    
 	public void moveMap() {
 		for(int j = 0; j < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; j++){
 			for(int i = 0; i < GameSettings.GRID_LENGTH/GameSettings.BLOCK_SIZE; i++){
@@ -146,9 +149,7 @@ public class World {
 	public void navMap(int nav){
 		switch(nav){
 		case MAP_UP:
-			
 			setYDirection(-GameSettings.MAP_SCROLL_SPEED);
-
 			break;
 		case MAP_DOWN:
 			setYDirection(GameSettings.MAP_SCROLL_SPEED);
@@ -160,6 +161,19 @@ public class World {
 		case MAP_RIGHT:
 			setXDirection(GameSettings.MAP_SCROLL_SPEED);
 			break;
+		}
+	}
+
+	public void addQueueBlock(Rectangle r) {
+		buildQueueBlocks.add(r);
+	}
+	public static void removeQueueBlock(Rectangle r) {
+		buildQueueBlocks.remove(r);
+	}
+	public void drawQueue(Graphics g){
+		g.setColor(Color.red);
+		for(Rectangle r : buildQueueBlocks){
+			g.drawRect(r.x,r.y,GameSettings.BLOCK_SIZE, GameSettings.BLOCK_SIZE);
 		}
 	}
 }

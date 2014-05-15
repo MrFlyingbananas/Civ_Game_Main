@@ -231,7 +231,7 @@ public class GameMenu extends JFrame implements ActionListener{
 			fw.stopGame();
 			super.dispose();
 		}else if(e.getSource() == jMQuitToTitleScreen){
-			
+		
 		}
 	}
 	private void errorPopup(int errorNum){

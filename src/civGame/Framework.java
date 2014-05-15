@@ -1,15 +1,16 @@
 package civGame;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -18,16 +19,20 @@ import javax.swing.Timer;
 public class Framework extends JPanel implements Runnable, ActionListener{
 	//game vars
 	private Thread game;
-	private Timer dayTimer, tmr;
+	private Timer dayTimer, calcTimer, workerDirectionTimer, workerMoveTimer;
 	private volatile boolean running = false;
 	private long period = 6*1000000;  //ms >nano
 	private static final int DELAYS_BEFORE_PAUSE = 10;
 	public int foodPD, waterPD, stonePD, goldPD;
 	public int food, water, stone, gold, population;
+	private Stack<Worker> workers;
+	private ArrayList<Worker> workersBusy;
+	public static ArrayList<Rectangle> buildQueue;
 	private int waterUsed, foodUsed;
 	private int houseNum, farmNum, wellNum, mineNum;
 	//game objects
 	private World world;
+	private Worker worker;
 	public Framework(){
 		world = new World();
 		setVisible(true);
@@ -165,7 +170,6 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 					//"Food Per Day:	"+foodPD+"\n"+
 					//"Water Per Day  "+waterPD+"\n"+
 					//"Water:			"+water+"\n"
-					
 		//	);
 			
 		}
@@ -185,13 +189,39 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		farmNum = GameSettings.STARTING_FARM_NUM;
 		wellNum = GameSettings.STARTING_WELL_NUM;
 		mineNum = GameSettings.STARTING_MINE_NUM;
+		workers = new Stack<Worker>();
+		workersBusy = new ArrayList<Worker>();
+		buildQueue = new ArrayList<Rectangle>();
+		workers.push(new Worker(200,200));
+		workers.push(new Worker(400,400));
 	}
 	private void gameUpdate(){
 		world.moveMap();
+		if(!buildQueue.isEmpty() && buildQueue != null){
+			if(!workers.isEmpty() && workers != null){
+				if(buildQueue.size()-1 != workersBusy.size()-1){
+					workersBusy.add(workers.pop());
+					workersBusy.get(workersBusy.size()-1).setBuild(buildQueue.remove(buildQueue.size()-1));
+				}
+			}
+		}
+		if(!workersBusy.isEmpty()){
+			Worker badWorker = null;
+			for(Worker w : workersBusy){
+				if(!w.isWorking()){
+					badWorker = w;
+				}
+			}
+			if(badWorker != null){
+				workers.push(badWorker);
+				workersBusy.remove(badWorker);
+			}
+		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == dayTimer){
+		Object r = e.getSource();
+		if(r == dayTimer){
 			food+=foodPD;
 			water+=waterPD;
 			gold+=goldPD;
@@ -201,10 +231,27 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			GameMenu.water.setText("Water In Storage: "+String.valueOf(water));
 			GameMenu.gold.setText("Gold In Storage: "+String.valueOf(gold));
 			GameMenu.stone.setText("Stone In Storage: "+String.valueOf(stone));
-		}
-		if(e.getSource() == tmr){
+		}else if(r == calcTimer){
 			calcPDVars();
 			GameMenu.refreshAllJLabels();
+			
+		}else if(r == workerDirectionTimer){
+			if(!workers.isEmpty()){
+				for(Worker w : workers){
+					w.newDirection();
+				}
+			}
+		}else if(r == workerMoveTimer){
+			if(!workers.isEmpty()){
+				for(Worker w : workers){
+					w.move();
+				}
+			}
+			if(!workersBusy.isEmpty()){
+				for(Worker w : workersBusy){
+					w.buildMove();
+				}
+			}
 		}
 	}
 	public void calcPDVars(){
@@ -245,6 +292,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				population-=GameSettings.FARM_PEOPLE_COST;
 				gold-=GameSettings.FARM_GOLD_COST;
 				error = GameSettings.ERROR_NONE;
+				buildQueue.add(world.selectBlock);
+				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
@@ -264,6 +313,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				mineNum++;
 				population-=GameSettings.MINE_PEOPLE_COST;
 				error = GameSettings.ERROR_NONE;
+				buildQueue.add(world.selectBlock);
+				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
@@ -282,6 +333,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
 				wellNum++;
 				error = GameSettings.ERROR_NONE;
+				buildQueue.add(world.selectBlock);
+				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
@@ -300,6 +353,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
 				gold-=GameSettings.WORKSHOP_GOLD_COST;
 				error = GameSettings.ERROR_NONE;
+				buildQueue.add(world.selectBlock);
+				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
 			
@@ -319,6 +374,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				gold-=GameSettings.HOUSE_GOLD_COST;
 				houseNum++;
 				error = GameSettings.ERROR_NONE;
+				buildQueue.add(world.selectBlock);
+				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
 			}else if(gold < GameSettings.HOUSE_GOLD_COST){
@@ -327,14 +384,24 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		}
 		return error;
 	}
-
+	public int addWorker(){
+		int error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
+		if(population > 0){
+			error = GameSettings.ERROR_NONE;
+		}
+		return error;
+	}
 	private void startGame(){
 		if(game == null || !running){
 			game = new Thread(this);
 			dayTimer = new Timer(GameSettings.DAY_LENGTH*1000, this);
-			tmr = new Timer(100, this);
+			workerDirectionTimer = new Timer(3000, this);
+			workerMoveTimer = new Timer(25, this);
+			calcTimer = new Timer(100, this);
 			dayTimer.start();
-			tmr.start();
+			calcTimer.start();
+			workerDirectionTimer.start();
+			workerMoveTimer.start();
 			game.start();
 			
 			running = true;
@@ -352,5 +419,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		world.draw(g);
+		if(!workers.isEmpty()){
+			for(Worker w : workers){
+				w.draw(g);
+			}
+		}
+		if(!workersBusy.isEmpty()){
+			for(Worker w : workersBusy){
+				w.draw(g);
+			}
+		}
 	}
 }

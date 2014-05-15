@@ -20,7 +20,7 @@ public class GameSettings {
 	public static final int GAME_WINDOW_WIDTH = 1099;
 	public static final int GAME_WINDOW_HEIGHT = 951;
 	public static final int BLOCK_SIZE = 30;
-	public static final int GRID_LENGTH = 1800;
+	public static final int GRID_LENGTH = 900;
 	public static final Dimension GAME_DIM = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 	
 	
@@ -88,7 +88,5 @@ public class GameSettings {
 	public final static int ERROR_CODE = 999;
 	
 	public static final int MAP_SCROLL_SPEED = -1;
-	
-
 	
 }
