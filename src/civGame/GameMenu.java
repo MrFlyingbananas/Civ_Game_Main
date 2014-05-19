@@ -18,54 +18,60 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class GameMenu extends JFrame implements ActionListener{
-	private JButton bAddFarm, bAddMine, bAddWell, bAddHouse, bAddWorkshop;
+	private static JButton bAddFarm, bAddMine, bAddWell, bAddHouse, bAddWorkshop;
 	public static JLabel food, gold, stone, water, population;
 	public static JLabel foodPD, goldPD, stonePD, waterPD;
-	private JLabel line;
+	private static JLabel line;
 	public static Framework fw;
 	public static JPanel bottomBorder, topBorder, leftBorder, rightBorder;
-	private JPanel infoPanel;
-	private CostMenu costMenu;
+	private static JPanel infoPanel;
+	private static JFrame j = new JFrame();
+	private static CostMenu costMenu;
+	private static GameMenu m;
 	public static UpgradeMenu upgradeMenu;
-	private JMenuBar topBar;
-	private JMenu file, game;
-	private JMenuItem jMOpenBlockInfoMenu, jMQuitToTitleScreen, jMQuitToDesktop, jMOpenUpgradeMenu;
+	private static JMenuBar topBar;
+	private static JMenu file, game;
+	private static JMenuItem jMOpenBlockInfoMenu, jMQuitToTitleScreen, jMQuitToDesktop, jMOpenUpgradeMenu;
+	private static TitleScreen ts;
 	public GameMenu(){
+		ts = new TitleScreen();
+		j.add(ts, BorderLayout.CENTER);
+		j.setSize(GameSettings.GAME_DIM);
+		j.setPreferredSize(GameSettings.GAME_DIM);
+		j.setLocationRelativeTo(null);
+		j.setTitle("Farming Simulator");
+		j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		j.setVisible(true);
+		j.setResizable(false);
+	}
+	public static void startGame(){
+		j.remove(ts);
+		j.getContentPane().remove(ts);
 		fw = new Framework();
-		add(fw);
-	    setSize(GameSettings.GAME_DIM);
-	    setPreferredSize(GameSettings.GAME_DIM);
-	    setLocationRelativeTo(null);
-	    setTitle("Farming Simulator");
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setVisible(true);
-	    setResizable(false);
-	    
+		ts.setLocation(1000, 0);
+		j.add(fw);
+		j.repaint();
+		j.revalidate();
+		j.invalidate();
+		j.validate();
+		ts.repaint();
+		ts.revalidate();
 	    initJPanes();
 	    initButtons();
 	    initJMenus();
 	    initLabels();
 	    createMenu();
-	    pack();
+	   
 	}
-	private void initJPanes(){
+	private static void initJPanes(){
 		infoPanel = new JPanel();
-		bottomBorder = new JPanel();
-		topBorder = new JPanel();
-		leftBorder = new JPanel();
-		add(leftBorder, BorderLayout.SOUTH);
-		add(topBorder, BorderLayout.NORTH);
-		add(bottomBorder, BorderLayout.SOUTH);
-	    add(infoPanel, BorderLayout.EAST);
+		j.add(infoPanel, BorderLayout.EAST);
 	    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 	    infoPanel.setBackground(Color.black);
 	    infoPanel.add(Box.createHorizontalGlue());
 	    infoPanel.setBorder(new EmptyBorder(60,10,0,50));
-	    leftBorder.setVisible(false);
-	    topBorder.setVisible(false);
-	    bottomBorder.setVisible(false);
 	}
-	private void initJMenus(){
+	private static void initJMenus(){
 		topBar = new JMenuBar();
 		file = new JMenu("File");
 		game = new JMenu("Game");
@@ -74,27 +80,26 @@ public class GameMenu extends JFrame implements ActionListener{
 		jMQuitToDesktop = new JMenuItem("Quit To Desktop");
 		jMQuitToTitleScreen = new JMenuItem("Quit To Title Screen");
 		
-		jMOpenBlockInfoMenu.addActionListener(this);
-		jMOpenUpgradeMenu.addActionListener(this);
-		jMQuitToDesktop.addActionListener(this);
-		jMQuitToTitleScreen.addActionListener(this);
-		setJMenuBar(topBar);
+		jMOpenBlockInfoMenu.addActionListener(new GameMenu());
+		jMOpenUpgradeMenu.addActionListener(new GameMenu());
+		jMQuitToDesktop.addActionListener(new GameMenu());
+		jMQuitToTitleScreen.addActionListener(new GameMenu());
+		j.setJMenuBar(topBar);
 	}
-	private void initButtons() {
+	private static void initButtons() {
 		bAddFarm = new JButton("Add a farm");
 		bAddMine = new JButton("Add a mine");
 		bAddHouse = new JButton("Add a house");
 		bAddWell = new JButton("Add a well");
 		bAddWorkshop = new JButton("Add workshop");
 	   
-		bAddFarm.addActionListener(this);
-		bAddMine.addActionListener(this);
-		bAddHouse.addActionListener(this);
-		bAddWell.addActionListener(this);
-		bAddWorkshop.addActionListener(this);
-	    validate();
+		bAddFarm.addActionListener(new GameMenu());
+		bAddMine.addActionListener(new GameMenu());
+		bAddHouse.addActionListener(new GameMenu());
+		bAddWell.addActionListener(new GameMenu());
+		bAddWorkshop.addActionListener(new GameMenu());
 	}
-	private void initLabels() {
+	private static void initLabels() {
 		food = new JLabel("Food In Storage");
 		foodPD = new JLabel("Food Per Day");
 		water = new JLabel("Water In Storage");
@@ -115,11 +120,8 @@ public class GameMenu extends JFrame implements ActionListener{
 		stonePD.setText("Stone Per Day: "+fw.stonePD);
 		population.setText("Population: "+fw.population);
 		line.setText("___________________");
-		if(foodPD == null){
-			System.out.println("initLabels error");
-		}
 	}
-	private void createMenu(){
+	private static void createMenu(){
 		infoPanel.add(population);
 		infoPanel.add(Box.createVerticalStrut(30));
 		infoPanel.add(food);
@@ -166,9 +168,9 @@ public class GameMenu extends JFrame implements ActionListener{
 	    file.add(jMQuitToDesktop);
 	    
 	}
-	
+
 	public static void main (String[] args){
-		GameMenu m = new GameMenu();						
+		m = new GameMenu();						
 	}
 	
 	public int test(){
@@ -270,5 +272,18 @@ public class GameMenu extends JFrame implements ActionListener{
 		gold.setText("Gold In Storage: "+fw.gold);
 		stone.setText("Stone In Storage: "+fw.stone);
 	}
-	
+	public static void endGameMenu() {
+		int reply = JOptionPane.showConfirmDialog(null, "Game Over", "Game over, you won! Play again?",JOptionPane.YES_NO_OPTION);
+		if(reply == JOptionPane.YES_OPTION){
+			j.dispose();
+			j = new JFrame();
+			m.dispose();
+			m = new GameMenu();
+			fw.reset();
+		}else{
+			fw.stopGame();
+			j.dispose();
+			m.dispose();
+		}
+	}
 }

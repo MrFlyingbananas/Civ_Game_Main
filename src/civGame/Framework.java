@@ -32,7 +32,6 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	private int houseNum, farmNum, wellNum, mineNum;
 	//game objects
 	private World world;
-	private Worker worker;
 	public Framework(){
 		world = new World();
 		setVisible(true);
@@ -214,8 +213,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}
 			if(badWorker != null){
 				workers.push(badWorker);
+				badWorker.newDirection();
 				workersBusy.remove(badWorker);
 			}
+		}
+		checkIfGameOver();
+	}
+	private void checkIfGameOver(){
+		if(population >= 1 && gold >= 1235 && Math.signum(food) != -1 && Math.signum(water) != -1){
+			endCurrentGame();
 		}
 	}
 	@Override
@@ -406,12 +412,29 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			
 			running = true;
 		}
-		
 	}
 	public void stopGame(){
 		if(running){
 			running = false;
+			dayTimer.stop();
+			calcTimer.stop();
+			workerDirectionTimer.stop();
+			workerMoveTimer.stop();
+			super.removeAll();
 		}
+	}
+	public void endCurrentGame(){
+		running = false;
+		dayTimer.stop();
+		calcTimer.stop();
+		workerDirectionTimer.stop();
+		workerMoveTimer.stop();
+		GameMenu.endGameMenu();
+	}
+	public void reset(){
+		running = true;
+		initVars();
+		startGame();
 	}
 	private void log(String s){
 		System.out.println(s);

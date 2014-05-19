@@ -82,18 +82,18 @@ public class Worker {
 			isWorking = false;
 			World.removeQueueBlock(buildRectangle);
 		}else{
-			if(worker.x == buildRectangle.x){
+			if(worker.x == buildRectangle.x+GameSettings.BLOCK_SIZE/2){
 				xDirection = 0;
-			}else if(worker.x < buildRectangle.x){
+			}else if(worker.x < buildRectangle.x+GameSettings.BLOCK_SIZE/2){
 				xDirection = 1; 
-			}else if(worker.x > buildRectangle.x){
+			}else if(worker.x > buildRectangle.x+GameSettings.BLOCK_SIZE/2){
 				xDirection = -1;
 			}
-			if(worker.y == buildRectangle.y){
+			if(worker.y == buildRectangle.y+GameSettings.BLOCK_SIZE/2){
 				yDirection = 0;
-			}else if(worker.y < buildRectangle.y){
+			}else if(worker.y < buildRectangle.y+GameSettings.BLOCK_SIZE/2){
 				yDirection = 1;
-			}else if(worker.y > buildRectangle.y){
+			}else if(worker.y > buildRectangle.y+GameSettings.BLOCK_SIZE/2){
 				yDirection = -1;
 			}
 		}
