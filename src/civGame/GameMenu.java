@@ -25,51 +25,52 @@ public class GameMenu extends JFrame implements ActionListener{
 	public static Framework fw;
 	public static JPanel bottomBorder, topBorder, leftBorder, rightBorder;
 	private static JPanel infoPanel;
-	private static JFrame j = new JFrame();
-	private static CostMenu costMenu;
-	private static GameMenu m;
 	public static UpgradeMenu upgradeMenu;
 	private static JMenuBar topBar;
 	private static JMenu file, game;
 	private static JMenuItem jMOpenBlockInfoMenu, jMQuitToTitleScreen, jMQuitToDesktop, jMOpenUpgradeMenu;
+	private static JFrame j;
 	private static TitleScreen ts;
 	public GameMenu(){
-		ts = new TitleScreen();
-		j.add(ts, BorderLayout.CENTER);
-		j.setSize(GameSettings.GAME_DIM);
-		j.setPreferredSize(GameSettings.GAME_DIM);
-		j.setLocationRelativeTo(null);
-		j.setTitle("Farming Simulator");
-		j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		j.setVisible(true);
-		j.setResizable(false);
+		if(ts == null){
+			ts = new TitleScreen();
+		}
+
 	}
 	public static void startGame(){
-		j.remove(ts);
-		j.getContentPane().remove(ts);
+		j = new JFrame();
+	    j.setSize(GameSettings.GAME_DIM);
+	    j.setPreferredSize(GameSettings.GAME_DIM);
+	    j.setLocationRelativeTo(null);
+	    j.setTitle("Farming Simulator");
+	    j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    j.setVisible(true);
+	    j.setResizable(false);
+	    j.pack();
 		fw = new Framework();
-		ts.setLocation(1000, 0);
 		j.add(fw);
-		j.repaint();
-		j.revalidate();
-		j.invalidate();
-		j.validate();
-		ts.repaint();
-		ts.revalidate();
-	    initJPanes();
-	    initButtons();
-	    initJMenus();
-	    initLabels();
-	    createMenu();
-	   
+		initJPanes();
+		initButtons();
+		initJMenus();
+		initLabels();
+		createMenu();
 	}
 	private static void initJPanes(){
 		infoPanel = new JPanel();
+		bottomBorder = new JPanel();
+		topBorder = new JPanel();
+		leftBorder = new JPanel();
+		j.add(leftBorder, BorderLayout.SOUTH);
+		j.add(topBorder, BorderLayout.NORTH);
+		j.add(bottomBorder, BorderLayout.SOUTH);
 		j.add(infoPanel, BorderLayout.EAST);
 	    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 	    infoPanel.setBackground(Color.black);
 	    infoPanel.add(Box.createHorizontalGlue());
 	    infoPanel.setBorder(new EmptyBorder(60,10,0,50));
+	    leftBorder.setVisible(false);
+	    topBorder.setVisible(false);
+	    bottomBorder.setVisible(false);
 	}
 	private static void initJMenus(){
 		topBar = new JMenuBar();
@@ -79,7 +80,7 @@ public class GameMenu extends JFrame implements ActionListener{
 		jMOpenUpgradeMenu = new JMenuItem("Open Upgrade Menu");
 		jMQuitToDesktop = new JMenuItem("Quit To Desktop");
 		jMQuitToTitleScreen = new JMenuItem("Quit To Title Screen");
-		
+
 		jMOpenBlockInfoMenu.addActionListener(new GameMenu());
 		jMOpenUpgradeMenu.addActionListener(new GameMenu());
 		jMQuitToDesktop.addActionListener(new GameMenu());
@@ -92,7 +93,7 @@ public class GameMenu extends JFrame implements ActionListener{
 		bAddHouse = new JButton("Add a house");
 		bAddWell = new JButton("Add a well");
 		bAddWorkshop = new JButton("Add workshop");
-	   
+
 		bAddFarm.addActionListener(new GameMenu());
 		bAddMine.addActionListener(new GameMenu());
 		bAddHouse.addActionListener(new GameMenu());
@@ -120,6 +121,9 @@ public class GameMenu extends JFrame implements ActionListener{
 		stonePD.setText("Stone Per Day: "+fw.stonePD);
 		population.setText("Population: "+fw.population);
 		line.setText("___________________");
+		if(foodPD == null){
+			System.out.println("initLabels error");
+		}
 	}
 	private static void createMenu(){
 		infoPanel.add(population);
@@ -162,17 +166,16 @@ public class GameMenu extends JFrame implements ActionListener{
 		population.setForeground(Color.white);
 	    topBar.add(file);
 	    topBar.add(game);
-	    game.add(jMOpenBlockInfoMenu);
 	    game.add(jMOpenUpgradeMenu);
 	    file.add(jMQuitToTitleScreen);
 	    file.add(jMQuitToDesktop);
-	    
+
 	}
 
 	public static void main (String[] args){
-		m = new GameMenu();						
+		GameMenu m = new GameMenu();						
 	}
-	
+
 	public int test(){
 		return fw.goldPD;
 	}
@@ -186,18 +189,18 @@ public class GameMenu extends JFrame implements ActionListener{
 		}else if(e.getSource() == bAddMine){
 			errorCheck = fw.addMine();
 			errorPopup(errorCheck);
-			
-			
+
+
 		}else if(e.getSource() == bAddHouse){
 			errorCheck = fw.addHouse();
 			errorPopup(errorCheck);
-			
-			
+
+
 		}else if(e.getSource() == bAddWell){
 			errorCheck = fw.addWell();
 			errorPopup(errorCheck);
-			
-			
+
+
 		}else if(e.getSource() == bAddWorkshop){
 			errorCheck = fw.addWorkshop();
 			if(errorCheck == GameSettings.ERROR_NONE){
@@ -205,17 +208,8 @@ public class GameMenu extends JFrame implements ActionListener{
 			}else{
 				errorPopup(errorCheck);
 			}
-			
-		}else if(e.getSource() == jMOpenBlockInfoMenu){
-			if(costMenu == null){
-				costMenu = new CostMenu();
-			}else if(costMenu != null && !costMenu.isShowing()){
-				costMenu.dispose();
-				costMenu = new CostMenu();
-			}else{
-				costMenu.requestFocus();
-			}
-			
+
+
 		}else if(e.getSource() == jMOpenUpgradeMenu){
 			if(!bAddWorkshop.isVisible()){
 				if(upgradeMenu == null){
@@ -233,13 +227,15 @@ public class GameMenu extends JFrame implements ActionListener{
 			fw.stopGame();
 			super.dispose();
 		}else if(e.getSource() == jMQuitToTitleScreen){
-		
+			j.dispose();
+			ts = null;
+			new GameMenu();
 		}
 	}
 	private void errorPopup(int errorNum){
 		switch(errorNum){
 			case GameSettings.ERROR_NONE:
-				
+
 				break;
 			case GameSettings.ERROR_OCCUPIED_TILE:
 				JOptionPane.showMessageDialog(null,"You cannot place a building ontop of another!",
@@ -272,18 +268,5 @@ public class GameMenu extends JFrame implements ActionListener{
 		gold.setText("Gold In Storage: "+fw.gold);
 		stone.setText("Stone In Storage: "+fw.stone);
 	}
-	public static void endGameMenu() {
-		int reply = JOptionPane.showConfirmDialog(null, "Game Over", "Game over, you won! Play again?",JOptionPane.YES_NO_OPTION);
-		if(reply == JOptionPane.YES_OPTION){
-			j.dispose();
-			j = new JFrame();
-			m.dispose();
-			m = new GameMenu();
-			fw.reset();
-		}else{
-			fw.stopGame();
-			j.dispose();
-			m.dispose();
-		}
-	}
+
 }

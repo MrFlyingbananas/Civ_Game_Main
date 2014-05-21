@@ -32,6 +32,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 	private int houseNum, farmNum, wellNum, mineNum;
 	//game objects
 	private World world;
+	private Worker worker;
 	public Framework(){
 		world = new World();
 		setVisible(true);
@@ -86,7 +87,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				System.out.println("keyTyped");
 			*/}
 		});
-		
+
 		addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e){
@@ -112,11 +113,11 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}
 			@Override
 			public void mouseEntered(MouseEvent e){
-				
+
 			}
 			@Override
 			public void mouseExited(MouseEvent e){
-				
+
 			}
 		});
 	}
@@ -170,7 +171,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 					//"Water Per Day  "+waterPD+"\n"+
 					//"Water:			"+water+"\n"
 		//	);
-			
+
 		}
 	}
 
@@ -213,15 +214,8 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}
 			if(badWorker != null){
 				workers.push(badWorker);
-				badWorker.newDirection();
 				workersBusy.remove(badWorker);
 			}
-		}
-		checkIfGameOver();
-	}
-	private void checkIfGameOver(){
-		if(population >= 1 && gold >= 1235 && Math.signum(food) != -1 && Math.signum(water) != -1){
-			endCurrentGame();
 		}
 	}
 	@Override
@@ -232,7 +226,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			water+=waterPD;
 			gold+=goldPD;
 			stone+=stonePD;
-		
+
 			GameMenu.food.setText("Food In Storage: "+String.valueOf(food));
 			GameMenu.water.setText("Water In Storage: "+String.valueOf(water));
 			GameMenu.gold.setText("Gold In Storage: "+String.valueOf(gold));
@@ -240,7 +234,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		}else if(r == calcTimer){
 			calcPDVars();
 			GameMenu.refreshAllJLabels();
-			
+
 		}else if(r == workerDirectionTimer){
 			if(!workers.isEmpty()){
 				for(Worker w : workers){
@@ -292,7 +286,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		if(World.selectPlace1 != -1){
 			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 					population > GameSettings.FARM_PEOPLE_COST && gold > GameSettings.FARM_GOLD_COST){
-			
+
 				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.FARM;
 				farmNum++;
 				population-=GameSettings.FARM_PEOPLE_COST;
@@ -302,7 +296,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
-			
+
 			}else if(population < GameSettings.FARM_PEOPLE_COST || gold < GameSettings.FARM_GOLD_COST){
 				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 			}
@@ -314,7 +308,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
 			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 					population > GameSettings.MINE_PEOPLE_COST){
-				
+
 				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.MINE;
 				mineNum++;
 				population-=GameSettings.MINE_PEOPLE_COST;
@@ -323,7 +317,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
-			
+
 			}else if(population < GameSettings.MINE_PEOPLE_COST){
 				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 			}
@@ -335,7 +329,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
 			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 					stone > GameSettings.WELL_STONE_COST){
-			
+
 				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
 				wellNum++;
 				error = GameSettings.ERROR_NONE;
@@ -343,7 +337,7 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
-			
+
 			}else if(stone < GameSettings.WELL_STONE_COST){
 				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 			}
@@ -355,15 +349,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 		if(World.selectPlace1 != -1 && World.selectPlace2 != -1){
 			if(World.blockImg[World.selectPlace1][World.selectPlace2] == GameSettings.GRASS &&
 					gold > GameSettings.WORKSHOP_GOLD_COST){
-			
-				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WELL;
+
+				World.blockImg[World.selectPlace1][World.selectPlace2] = GameSettings.WORKSHOP;
 				gold-=GameSettings.WORKSHOP_GOLD_COST;
 				error = GameSettings.ERROR_NONE;
 				buildQueue.add(world.selectBlock);
 				world.addQueueBlock(world.selectBlock);
 			}else if(World.blockImg[World.selectPlace1][World.selectPlace2] != GameSettings.GRASS){
 				error = GameSettings.ERROR_OCCUPIED_TILE;
-			
+
 			}else if(gold < GameSettings.WORKSHOP_GOLD_COST){
 				error = GameSettings.ERROR_INSUFFICENT_RESOURCES;
 			}	
@@ -409,32 +403,15 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			workerDirectionTimer.start();
 			workerMoveTimer.start();
 			game.start();
-			
+
 			running = true;
 		}
+
 	}
 	public void stopGame(){
 		if(running){
 			running = false;
-			dayTimer.stop();
-			calcTimer.stop();
-			workerDirectionTimer.stop();
-			workerMoveTimer.stop();
-			super.removeAll();
 		}
-	}
-	public void endCurrentGame(){
-		running = false;
-		dayTimer.stop();
-		calcTimer.stop();
-		workerDirectionTimer.stop();
-		workerMoveTimer.stop();
-		GameMenu.endGameMenu();
-	}
-	public void reset(){
-		running = true;
-		initVars();
-		startGame();
 	}
 	private void log(String s){
 		System.out.println(s);
@@ -453,5 +430,5 @@ public class Framework extends JPanel implements Runnable, ActionListener{
 			}
 		}
 	}
-	
+
 }

@@ -25,12 +25,12 @@ public class GameSettings {
 	
 	
 	
-	public final static Image FARM = new ImageIcon("res/farm.jpg").getImage();
-	public final static Image HOUSE = new ImageIcon("res/house.jpg").getImage();
-	public final static Image WELL = new ImageIcon("res/well.jpg").getImage();
-	public final static Image MINE = new ImageIcon("res/mine.jpg").getImage();
+	public final static Image FARM = new ImageIcon("res/farm.png").getImage();
+	public final static Image HOUSE = new ImageIcon("res/house.png").getImage();
+	public final static Image WELL = new ImageIcon("res/well.png").getImage();
+	public final static Image MINE = new ImageIcon("res/mine.png").getImage();
 	public final static Image GRASS = new ImageIcon("res/grass_30.png").getImage();
-	
+	public final static Image WORKSHOP = new ImageIcon("res/workshop.png").getImage();
 	
 	public final static int HOUSE_GOLD_COST = 60;
 	public final static int HOUSE_PEOPLE_YIELD = 10;
@@ -39,7 +39,7 @@ public class GameSettings {
 
 	
 	public final static int MINE_PEOPLE_COST = 5;
-	public final static int MINE_GOLD_YIELD = 80;
+	public final static int MINE_GOLD_YIELD = 60;
 	public final static int MINE_STONE_YIELD = 25;
 	
 	public final static int FARM_PEOPLE_COST = 2;
@@ -52,13 +52,13 @@ public class GameSettings {
 	
 	public static final int WORKSHOP_GOLD_COST = 4;
 	
-	public final static int DAY_LENGTH = 5;
+	public final static int DAY_LENGTH = 15;
 	
-	public final static int STARTING_FOOD = 1234;
-	public final static int STARTING_WATER = 1234;
-	public final static int STARTING_GOLD = 1234;
-	public final static int STARTING_STONE = 1234;
-	public final static int STARTING_POPULATION = 1234;
+	public final static int STARTING_FOOD = 8;
+	public final static int STARTING_WATER = 8;
+	public final static int STARTING_GOLD = 500;
+	public final static int STARTING_STONE = 0;
+	public final static int STARTING_POPULATION = 10;
 	public final static int STARTING_HOUSE_NUM = 1;
 	public final static int STARTING_FARM_NUM = 1;
 	public final static int STARTING_WELL_NUM = 1;

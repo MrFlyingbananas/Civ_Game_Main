@@ -33,7 +33,6 @@ public class World {
 		blocks = new Rectangle[GameSettings.GRID_LENGTH][GameSettings.GRID_LENGTH];
 		blockImg = new Image[GameSettings.GRID_LENGTH][GameSettings.GRID_LENGTH];
 		setArrays();
-		Screen = new Rectangle(0, 0, GameSettings.GRID_LENGTH, GameSettings.GRID_LENGTH);
 		buildQueueBlocks = new ArrayList<Rectangle>();
 	}
 	
